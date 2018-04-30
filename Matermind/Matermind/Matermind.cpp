@@ -9,7 +9,7 @@ using namespace std;
 
 //bool CheckWin();
 //void TourJoueur(char& choixTour);
-//vector<char> ChoixCPU(vector<char>& couleurs);
+vector<char> ChoixCPU(vector<char>& couleurs);
 void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<char>>& pions);
 
 int main()
@@ -36,6 +36,12 @@ int main()
 		}
 	}
 	AfficherPlaquette(plaquette, pions);
+	vector<char> choixCpu = ChoixCPU(couleurs);
+
+	for (int i = 0; i < choixCpu.size(); i++)
+	{
+		cout << choixCpu[i];
+	}
 
 }
 
@@ -53,4 +59,16 @@ void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<char>>& pi
 		cout << ligne << endl;
 		ligne = "|";
 	}
+}
+
+vector<char> ChoixCPU(vector<char>& couleurs)
+{
+	char choix1 = couleurs[rand() % (couleurs.size())];
+	char choix2 = couleurs[rand() % (couleurs.size())];
+	char choix3 = couleurs[rand() % (couleurs.size())];
+	char choix4 = couleurs[rand() % (couleurs.size())];
+
+	vector<char> cpuchoice = vector<char>({'[', choix1, ' ', choix2, ' ', choix3, ' ', choix4, ']'});
+
+	return cpuchoice;
 }
