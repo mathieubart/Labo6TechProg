@@ -8,7 +8,7 @@
 using namespace std;
 
 //bool CheckWin();
-//void TourJoueur(char& choixTour);
+void TourJoueur(vector<char>& choixTour);
 vector<char> ChoixCPU(vector<char>& couleurs);
 void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<char>>& pions);
 
@@ -43,6 +43,13 @@ int main()
 		cout << choixCpu[i];
 	}
 
+	do
+	{
+		TourJoueur(plaquette[tour]);
+
+	} while (tour <= plaquette.size()); //|| victoire == 1)
+
+
 }
 
 void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<char>>& pions)
@@ -71,4 +78,13 @@ vector<char> ChoixCPU(vector<char>& couleurs)
 	vector<char> cpuchoice = vector<char>({'[', choix1, ' ', choix2, ' ', choix3, ' ', choix4, ']'});
 
 	return cpuchoice;
+}
+
+void TourJoueur(vector<char>& choixTour)
+{
+	cout << "Entrer 4 couleurs: ";
+	cin >> choixTour[0];
+	cin >> choixTour[1];
+	cin >> choixTour[2];
+	cin >> choixTour[3];
 }
