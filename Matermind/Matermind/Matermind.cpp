@@ -4,20 +4,23 @@
 #include <vector>
 #include <random>
 #include <string>
+#include <ctime>
 
 using namespace std;
 
-//bool CheckWin();
+int CheckWin(vector<char> choixCpu, vector<char> choixJoueur, vector<string>& pions);
 void TourJoueur(vector<char>& choixTour);
 vector<char> ChoixCPU(vector<char>& couleurs);
-void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<char>>& pions);
+void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<string>>& pions);
 
 int main()
 {
+	srand(static_cast<unsigned int>(time(NULL)));
+
 	cout << "Instructions" << endl;
 
 	vector<vector<char>> plaquette = vector<vector<char>>();
-	vector<vector<char>> pions = vector<vector<char>>();
+	vector<vector<string>> pions = vector<vector<string>>();
 	vector<char> couleurs = vector<char>({ 'R', 'B', 'J', 'V', 'O' });
 
 	int tour = 1;
@@ -25,14 +28,14 @@ int main()
 	for (int i = 0; i < 10; i++)
 	{
 		plaquette.push_back(vector<char>());
-		pions.push_back(vector<char>());
+		pions.push_back(vector<string>());
 		for (int j = 0; j < 4; j++)
 		{
 			plaquette[i].push_back(' ');
 		}
 		for (int j = 0; j < 2; j++)
 		{
-			pions[i].push_back(' ');
+			pions[i].push_back(" ");
 		}
 	}
 	AfficherPlaquette(plaquette, pions);
@@ -43,16 +46,30 @@ int main()
 		cout << choixCpu[i];
 	}
 
+	int victoire = 0;
+
 	do
 	{
-		TourJoueur(plaquette[tour]);
+		TourJoueur(plaquette[tour - 1]);
+		victoire = CheckWin(choixCpu, plaquette[tour - 1], pions[tour - 1]);
+		if (victoire == 0)
+		{
+			AfficherPlaquette(plaquette, pions);
+		}
+		tour++;
+	} while (tour <= plaquette.size() && victoire != 1);
 
-	} while (tour <= plaquette.size()); //|| victoire == 1)
-
-
+	if (victoire == 1)
+	{
+		cout << "Vous avez gagne!!!";
+	}
+	else
+	{
+		cout << "Vous avez perdu!!!";
+	}
 }
 
-void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<char>>& pions)
+void AfficherPlaquette(vector<vector<char>>& plaquette, vector<vector<string>>& pions)
 {
 	string ligne = "|";
 	for (int i = 0; i < 10; i++)
@@ -75,7 +92,7 @@ vector<char> ChoixCPU(vector<char>& couleurs)
 	char choix3 = couleurs[rand() % (couleurs.size())];
 	char choix4 = couleurs[rand() % (couleurs.size())];
 
-	vector<char> cpuchoice = vector<char>({'[', choix1, ' ', choix2, ' ', choix3, ' ', choix4, ']'});
+	vector<char> cpuchoice = vector<char>({ choix1, choix2, choix3, choix4});
 
 	return cpuchoice;
 }
@@ -87,4 +104,56 @@ void TourJoueur(vector<char>& choixTour)
 	cin >> choixTour[1];
 	cin >> choixTour[2];
 	cin >> choixTour[3];
+}
+
+int CheckWin(vector<char> choixCpu, vector<char> choixJoueur, vector<string>& pions)
+{
+	int victoire = 0;
+	int blanc = 0;
+	int noir = 0;
+
+	for (int i = choixCpu.size() - 1; i >= 0; i--)
+	{
+		if (choixCpu[i] == choixJoueur[i])
+		{
+			choixCpu.erase(choixCpu.begin() + i);
+			choixJoueur.erase(choixJoueur.begin() + i);
+			blanc++;
+		}
+	}
+
+	if (blanc == 4)
+	{
+		victoire++;
+	}
+	else
+	{
+		pions[0] = to_string(blanc);
+
+		int i = choixCpu.size() - 1;
+		do
+		{
+			int j = choixJoueur.size() - 1;
+			do
+			{
+				if(choixJoueur[j] == choixCpu[i])
+				{
+					choixCpu.erase(choixCpu.begin() + i);
+					choixJoueur.erase(choixJoueur.begin() + j);
+					j = 0;
+					noir++;
+				}
+
+				j--;
+
+			} while (j >= 0);
+
+			i--;
+
+		} while (i >= 0);
+
+		pions[1] = to_string(noir);
+	}
+
+	return victoire;
 }
